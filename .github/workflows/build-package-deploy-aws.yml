@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "jar_workflow_aws" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "jar_workflow_aws" ]
 
 jobs:
   build:
@@ -35,6 +35,19 @@ jobs:
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
+
+    - name: Create Timestamp for Version Info
+      id: time
+      uses: nansm/get-time-action@v1.1
+      with:
+        format: 'YYYY-MM-DD-HH-mm-ss'
+
+    - name: Make Artifact Available
+      uses: actions/upload-artifact@v2
+      with:
+        name: "Artifact-${{steps.time.outputs.time}}"
+        path: build/libs
+        retention-days: 5
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
